@@ -1,0 +1,24 @@
+Follow tutorial at:
+https://github.com/kyamagu/mexopencv/wiki/Installation-%28Windows%2C-MATLAB%2C-OpenCV-3%29
+
+git clone https://github.com/opencv/opencv.git
+cd openvc
+git checkout tags/3.2.0
+cd ..
+git clone https://github.com/opencv/opencv_contrib.git
+cd opencv_contrib
+git checkout tags/3.2.0
+cd ..
+git clone https://github.com/kyamagu/mexopencv.git
+cd mexopencv
+git checkout v3.2
+cd ..
+
+For octave only:
+https://github.com/kyamagu/mexopencv/wiki/Installation-%28Windows%2C-Octave%2C-OpenCV-3%29
+
+git clone https://github.com/ninja-build/ninja.git
+cd ninja
+git checkout tags/v1.7.2
+python configure.py --bootstrap
+cd ..
