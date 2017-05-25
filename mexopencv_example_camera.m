@@ -1,3 +1,4 @@
+setup()
 %From documentation at: https://github.com/kyamagu/mexopencv/wiki/Getting-Started
 % Connect to a camera
 camera = cv.VideoCapture();

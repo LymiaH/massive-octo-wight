@@ -5,7 +5,7 @@ path_root = pwd;
 %change this to where have up the libaries
 path_dev = fullfile(fileparts(path_root),'dev');
 cd(fullfile(path_dev,'mexopencv'));
-path_mexopencv = fullfile(path_dev,'mexopencv')
+path_mexopencv = fullfile(path_dev,'mexopencv');
 addpath(path_mexopencv);
 addpath(fullfile(path_mexopencv,'opencv_contrib'));
 addpath(fullfile(path_mexopencv,'+cv','private'));

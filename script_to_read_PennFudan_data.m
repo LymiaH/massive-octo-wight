@@ -1,4 +1,4 @@
-addpath('./PAScode')
+setup()
 %% 
 % From project description page
 baseDir = '.\';

@@ -1,4 +1,4 @@
-addpath(fullfile(pwd,'PAScode'))
+setup()
 %%
 % From project description page
 annotDir = fullfile(pwd,'PennFudanPed','Annotation');
