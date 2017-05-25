@@ -6,7 +6,7 @@ annotDir = fullfile(pwd,'PennFudanPed','Annotation');
 files = dir(annotDir); files(1:2) = [];
 close all;
 for ii = 1 : length(files)
-    fileName = [annotDir files(ii).name];
+    fileName = fullfile(annotDir, files(ii).name);
     record = PASreadrecord(fileName);
     input_image = imread(fullfile(pwd, record.imgname));
     main_img = imshow(input_image); hold on;
