@@ -1,2 +1,0 @@
-# massive-octo-wight
-MATLAB FUNSIES with PEDESTRIAN DETECTION
