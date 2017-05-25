@@ -22,7 +22,7 @@ function varargout = ComputerVisionProject2017(varargin)
 
 % Edit the above text to modify the response to help ComputerVisionProject2017
 
-% Last Modified by GUIDE v2.5 25-May-2017 16:44:58
+% Last Modified by GUIDE v2.5 25-May-2017 16:54:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -167,11 +167,30 @@ count = 1;
      text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
     end    
             
-elapsedTime = toc*1000;
+elapsedTime = round(toc*1000);
+
+detectionTimeLabel = sprintf('%f ms', elapsedTime);
+set(handles.edit1, 'String', detectionTimeLabel);
+guidata(hObject,handles);
+
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit1 as text
+%        str2double(get(hObject,'String')) returns contents of edit1 as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function text4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to text4 (see GCBO)
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
