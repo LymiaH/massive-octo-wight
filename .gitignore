@@ -7,3 +7,12 @@ PAScode/
 
 #Training data
 images/
+
+#Matconnvet
+matconvnet-1.0-beta24/
+
+imagenet-vgg-f.mat
+
+
+#folder created during training
+data/
