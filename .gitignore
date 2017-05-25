@@ -3,7 +3,7 @@ PennFudanPed/
 PAScode/
 
 #Matlab autosave files
-.asv
+*.asv
 
 #Training data
 images/
