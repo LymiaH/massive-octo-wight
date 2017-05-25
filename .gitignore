@@ -4,3 +4,6 @@ PAScode/
 
 #Matlab autosave files
 .asv
+
+#Training data
+images/
