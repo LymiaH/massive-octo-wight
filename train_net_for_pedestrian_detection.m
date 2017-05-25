@@ -11,7 +11,7 @@ function net = train_net_for_pedestrian_detection(pretrainedPath)
     % The modifed network will use all layers except the last 2.
     net.layers = pretrained_net.layers(1:end-2);
 
-    % Add a fully connected convolution layrer and a softmax layer for
+    % Add a fully connected convolution layrer and a softmax loss layer for
     % classification.
     net.layers{end+1} = struct('name', 'fc8',...
                                'type', 'conv',...
@@ -41,23 +41,23 @@ function net = train_net_for_pedestrian_detection(pretrainedPath)
     
     %Train the CNN
     [net,info] = cnn_train(net,imdb,@getBatch,opts);
-    
+	
+    %Set some of the meta data
     net.meta.inputs.name = 'data';
     net.meta.inputs.size = [224,224,3,10];
     net.meta.imageMean = imageMean;
     net.meta.normalization.imageSize = [224,224,3,10];
-   % net.meta.normalization.averageImage = imdb.images.data_average;
     net.meta.normalization. border = [32, 32];
     net.meta.normalization. cropSize = [0.8750, 0.8750];
     net.meta.normalization.interpolation = 'bilinear';
     net.meta.classes.description = imdb.meta.classes;
     
+	%Makes a directory for net to be stored in 
     warning('off', 'MATLAB:MKDIR:DirectoryExists');
     mkdir('data/trainedNet/');
     save('data/trainedNet/trainedNet.mat','-struct','net');
     
     %Upgrade to current version of Matconvnet and fills in missing default values. 
     net = vl_simplenn_tidy(net);
-    
-    
+ 
 end

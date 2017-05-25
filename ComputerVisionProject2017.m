@@ -106,69 +106,74 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%Get the image that was loaded in the gui
 im = imread(handles.imageToBeUsed);
+
+%Load the trained model
 net = load('data/trainedNet/trainedNet.mat');
+
+%Change the last layer to softmax so the net can classify
 net.layers{end}.type = 'softmax';
 
 tic;
-%Height of pedestrians in the image database are between 180-390
-%pixels.
-%Window size should be big enough to see the pedestrians 
+
+%Set Window (boundary box) size
 windowSize = [100,250];
     
 %Corner of window
 Xmin = 1; 
 Ymin = 1;
 
+%Get coordinates for the edges of the image
 [Ymax, Xmax, d] = size(im);
 
-%need error checking
+%Create Boundary box struct to hold boxes that detect pedestrians
 bbox = struct();
 bbox.box = [];
 count = 1;
-    %Loop through the possible windows 
-    for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
-        for x = Xmin:(windowSize(1)):(Xmax - windowSize(1))
-            windowBox =  [x, y, windowSize(1)-1, windowSize(2)-1];
-            %windowBox = [20,20,100,300]
-            %Crop the window out of the image
-            windowIm = imcrop(im, windowBox);
-            im_ =single(windowIm);
-            im_ = imresize(im_, net.meta.normalization.imageSize(1:2)) ;
-            im_ = im_ - net.meta.imageMean ;
-            res = vl_simplenn(net,im_);
-            scores = squeeze(gather(res(end).x)) ;
-            [bestScore, best] = max(scores) ;
+%Loop through the possible windows 
+for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
+    for x = Xmin:(windowSize(1)):(Xmax - windowSize(1))
+		%Get the boundary box window coordinates
+        windowBox =  [x, y, windowSize(1)-1, windowSize(2)-1];
+		
+        %Crop the window out of the image
+        windowIm = imcrop(im, windowBox);
+		
+		%Preprocess window image
+        im_ =single(windowIm);
+        im_ = imresize(im_, net.meta.normalization.imageSize(1:2)) ;
+        im_ = im_ - net.meta.imageMean ;
+		
+		%Pass window image to the CNN to extract features
+        res = vl_simplenn(net,im_);
+		
+		%Get the classification results
+        scores = squeeze(gather(res(end).x)) ;
+        [bestScore, best] = max(scores) ;
             
-            %If the window detects a pedestrian
-           if(best ==  1)
-                bbox.box{count} = windowBox;
-                bbox.score{count} = bestScore;
-                count = count + 1;
-%                figure(1) ; clf ;  imagesc(im) ; 
-%                rectangle('Position', windowBox, 'EdgeColor','g','LineWidth',2);
-%                title(sprintf('%s (%d), score %.3f',...
-%                  net.meta.classes.description{best}, best, bestScore)) ;
-           end
-            
-            
-        end
+        %If the window detects a pedestrian, put the window image coordinates in the boundary box struct
+        if(best ==  1)
+			bbox.box{count} = windowBox;
+            bbox.score{count} = bestScore;
+            count = count + 1;
+        end      
     end
+end
     
-
-    
-    %Put bounding boxes over the image
-    axes(handles.axes1);
-    
-    imagesc(im) ; 
-    axis off
-    for ii= 1:length(bbox.box)
-     rectangle('Position', bbox.box{ii}, 'EdgeColor','g','LineWidth',2);
-     text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
-    end    
+%For every pedestrian that was detected, put bounding boxes over the image
+axes(handles.axes1);
+imagesc(im) ; 
+axis off
+for ii= 1:length(bbox.box)
+    rectangle('Position', bbox.box{ii}, 'EdgeColor','g','LineWidth',2);
+    text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
+end    
             
 elapsedTime = round(toc*1000);
 
+%Print the detection time in the gui
 detectionTimeLabel = sprintf('%f ms', elapsedTime);
 set(handles.edit1, 'String', detectionTimeLabel);
 guidata(hObject,handles);
