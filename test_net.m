@@ -3,9 +3,9 @@ function test_net(net)
     % Obtain and preprocess an image.
    %im = imread('F:\CITS4402\Images\Test\image_0017.jpg') ;
     %im = imread('E:\CITS4402\Data_toolkit\PennFudanPed\PNGImages\PennPed00096.png');
-   %im = imread('F:\CITS4402\Images\notPedestrians\cat.jpg');
-   %im = imread('download.jpg'); 
-    im =imread('http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg');
+   %im = imread('E:\CITS4402\Images\notPedestrians\cat.jpg');
+    im = imread('E:\CITS4402\pic.png');
+    %im =imread('http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg');
     net.layers{end}.type = 'softmax';
    
 
@@ -15,7 +15,7 @@ function test_net(net)
     %If it thinks its a pedestrian then, Draw bounding box around and put confidence over box
     %Might need an if statement if window too small.
 
-   
+   tic;
     %Height of pedestrians in the image database are between 180-390
     %pixels.
     %Window size should be big enough to see the pedestrians 
@@ -35,6 +35,7 @@ count = 1;
     for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
         for x = Xmin:(windowSize(1)):(Xmax - windowSize(1))
             windowBox =  [x, y, windowSize(1)-1, windowSize(2)-1];
+            %windowBox = [20,20,100,300]
             %Crop the window out of the image
             windowIm = imcrop(im, windowBox);
             im_ =single(windowIm);
@@ -47,6 +48,7 @@ count = 1;
             %If the window detects a pedestrian
            if(best ==  1)
                 bbox.box{count} = windowBox;
+                bbox.score{count} = bestScore;
                 count = count + 1;
 %                figure(1) ; clf ;  imagesc(im) ; 
 %                rectangle('Position', windowBox, 'EdgeColor','g','LineWidth',2);
@@ -64,7 +66,9 @@ count = 1;
     figure(1) ; clf ;  imagesc(im) ; 
     for ii= 1:length(bbox.box)
      rectangle('Position', bbox.box{ii}, 'EdgeColor','g','LineWidth',2);
+     text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
     end    
             
+elapsedTime = toc*1000
 
 end
