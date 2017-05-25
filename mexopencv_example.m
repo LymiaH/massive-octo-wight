@@ -1,4 +1,4 @@
-setup()
+setup;
 %For testing that opencv is working
 %From documentation at: http://kyamagu.github.io/mexopencv/matlab/CascadeClassifier.html
 xmlfile = fullfile(mexopencv.root(),'test','haarcascade_frontalface_alt2.xml');

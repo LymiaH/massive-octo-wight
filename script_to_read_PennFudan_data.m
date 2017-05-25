@@ -1,4 +1,4 @@
-setup()
+setup;
 %% 
 % From project description page
 baseDir = '.\';
