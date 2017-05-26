@@ -42,7 +42,7 @@ function [results] = test_net_find(interval, ratio, net, path)
             if ratio <= 0
                 for bottom = top+interval:interval:im_height
                     for right = left+interval:interval:im_width
-                        score = processing_step(top, left, bottom, right. net, im, bbox_rect, bbox_text);
+                        score = processing_step(top, left, bottom, right, net, im, bbox_rect, bbox_text);
                         if score > best_score
                             best_score = score;
                             best_bottom_right = [bottom, right];
@@ -117,4 +117,6 @@ function [ score ] = processing_step(top, left, bottom, right, net, im, bbox_rec
         %update_bbox(bbox_rect, bbox_text, bbox, score);
         %pause(0);
     end
+    %update_bbox(bbox_rect, bbox_text, bbox, score);
+    %pause(0);
 end
