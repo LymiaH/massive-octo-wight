@@ -28,7 +28,7 @@ for ii = 1 : length(files)
         img_over_h = imshow(img_over);
         set(img_over_h, 'XData', get(img_over_h, 'XData') + bbox(1) - 1);
         set(img_over_h, 'YData', get(img_over_h, 'YData') + bbox(2) - 1);
-        rectangle('Position', bbox, 'aEdgeColor','r','LineWidth',2);
+        rectangle('Position', bbox, 'EdgeColor','r','LineWidth',2);
     end
     hold off;
     pause(0.2);
