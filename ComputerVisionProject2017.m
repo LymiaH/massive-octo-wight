@@ -22,7 +22,7 @@ function varargout = ComputerVisionProject2017(varargin)
 
 % Edit the above text to modify the response to help ComputerVisionProject2017
 
-% Last Modified by GUIDE v2.5 25-May-2017 16:54:25
+% Last Modified by GUIDE v2.5 26-May-2017 09:29:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -174,7 +174,7 @@ end
 elapsedTime = round(toc*1000);
 
 %Print the detection time in the gui
-detectionTimeLabel = sprintf('%f ms', elapsedTime);
+detectionTimeLabel = sprintf('%.f ms', elapsedTime);
 set(handles.edit1, 'String', detectionTimeLabel);
 guidata(hObject,handles);
 
@@ -198,4 +198,3 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-

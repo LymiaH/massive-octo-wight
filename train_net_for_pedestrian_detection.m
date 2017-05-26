@@ -25,7 +25,7 @@ function net = train_net_for_pedestrian_detection(pretrainedPath)
                       
     %Set opts
     opts.batchSize = 100;
-    opts.numEpochs = 6 ;
+    opts.numEpochs = 4 ;
     opts.continue = true ;
     opts.gpus = [] ;
     opts.learningRate = 0.001 ;

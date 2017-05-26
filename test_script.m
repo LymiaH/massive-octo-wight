@@ -1,6 +1,6 @@
 % Install and compile MatConvNet (needed once).
   untar('http://www.vlfeat.org/matconvnet/download/matconvnet-1.0-beta24.tar.gz') ;
-  cd matconvnet-1.0-beta24
+   cd matconvnet-1.0-beta24
   run matlab/vl_compilenn ;
  
 % % % Download a pre-trained CNN from the web (needed once).
