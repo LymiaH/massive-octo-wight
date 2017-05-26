@@ -17,13 +17,13 @@ for ii = 1 : length(files)
         bbox(3:4) = bbox(3:4) - bbox(1:2);
         temp_image = imcrop(input_image, bbox);
         %save to positives
-        imwrite(temp_image, fullfile(path_positives, strcat(files(ii).name(1:end-4), '_pos.png')))
+        imwrite(temp_image, fullfile(path_positives, strcat(files(ii).name(1:end-4), '_', sprintf('%02d',jj),'pos.png')))
     end
     negatives = generate_negatives(record);
     for jj = 1 : length(negatives)
         bbox = negatives{jj};
         temp_image = imcrop(input_image, bbox);
         %save to negatives
-        imwrite(temp_image, fullfile(path_negatives, strcat(files(ii).name(1:end-4), '_neg.png')))
+        imwrite(temp_image, fullfile(path_negatives, strcat(files(ii).name(1:end-4), '_', sprintf('%02d',jj),'neg.png')))
     end
 end
