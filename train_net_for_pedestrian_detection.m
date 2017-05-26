@@ -2,6 +2,7 @@
 %recognise pedestrians.
 %This was made with reference to code found on https://github.com/vlfeat/matconvnet/issues/318
 function net = train_net_for_pedestrian_detection(pretrainedPath)
+    setup;
     %Variable for storing the modified network
     net = [];
 

@@ -1,9 +1,9 @@
-if ~exist('SETUP_DONE','var')
+if ~exist('SETUP_DONE', 'var')
     if (is_octave)
         install_mexopencv_octave;
     else
         install_mexopencv_matlab;
-        if exist(fullfile(path_root,'matconvnet-1.0-beta24')) == 0
+        if exist(fullfile(path_root,'matconvnet-1.0-beta24'),'dir') == 0
             untar('http://www.vlfeat.org/matconvnet/download/matconvnet-1.0-beta24.tar.gz')
             cd matconvnet-1.0-beta24
             run matlab/vl_compilenn
