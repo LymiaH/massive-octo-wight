@@ -58,6 +58,8 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
+%Run setup script
+setup;
 %Make the axis blank by default.
 handles.imageDefault = [0, 0; 0, 0];
 axes(handles.axes1);
