@@ -1,10 +1,10 @@
 function [results] = test_net_find(interval, ratio, net, path)
     %ratio is y/x
-    if nargin > 3
+    if nargin > 4
        error('Too many inputs')
     end
     if nargin < 1
-        interval = 16;
+        interval = 32;
     end
     if nargin < 2
         ratio = 2.7699;

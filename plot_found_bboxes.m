@@ -30,4 +30,10 @@ function plot_found_bboxes(bboxes, width, height)
         end
     end
     scatter3(X, Y, Z, C);
+    xlabel('X');
+    ylabel('Y');
+    zlabel('Z');
+    
+  
+
 end
