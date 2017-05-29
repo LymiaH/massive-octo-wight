@@ -1,10 +1,12 @@
 function test_net(net)
     % Obtain and preprocess an image.
-    %im = imread('F:\CITS4402\Images\Test\image_0017.jpg') ;
-    %im = imread('E:\CITS4402\Data_toolkit\PennFudanPed\PNGImages\PennPed00096.png');
-    %im = imread('E:\CITS4402\Images\notPedestrians\cat.jpg');
-    %im = imread('E:\CITS4402\pic.png');
-    im = imread('http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg');
+
+   %im = imread('F:\CITS4402\FudanPed00001.png') ;
+    im = imread('F:\CITS4402\Data_toolkit\PennFudanPed\PNGImages\PennPed00090.png');
+   %im = imread('E:\CITS4402\Images\notPedestrians\cat.jpg');
+    %im = imread('F:\CITS4402\pic.png');
+  % im =imread('http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg');
+
     net.layers{end}.type = 'softmax';
    
 
@@ -18,7 +20,7 @@ function test_net(net)
     %Height of pedestrians in the image database are between 180-390
     %pixels.
     %Window size should be big enough to see the pedestrians 
-    windowSize = [100,250];
+    windowSize = [100,260];
     
     %Corner of window
     Xmin = 1; 
@@ -32,7 +34,7 @@ bbox.box = [];
 count = 1;
     %Loop through the possible windows 
     for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
-        for x = Xmin:(windowSize(1)):(Xmax - windowSize(1))
+        for x = Xmin:(windowSize(1)/2):(Xmax - windowSize(1))
             windowBox =  [x, y, windowSize(1)-1, windowSize(2)-1];
             %windowBox = [20,20,100,300]
             %Crop the window out of the image
@@ -45,7 +47,7 @@ count = 1;
             [bestScore, best] = max(scores) ;
             
             %If the window detects a pedestrian
-           if(best ==  1)
+           if(best ==  1 && bestScore>=0.80)
                 bbox.box{count} = windowBox;
                 bbox.score{count} = bestScore;
                 count = count + 1;
@@ -60,13 +62,41 @@ count = 1;
     end
     
 
+    %To deal with overlap, loop over the bboxes to find where x coordinate
+    %is the same. Then take the bbox with the highest confidence and show
+    %that bbox.
+	for ii = 1:length(bbox.box)
+		for jj = ii+1:length(bbox.box)
+            if jj <= length(bbox.box)&& ~isempty(bbox.box{ii}) && ~isempty(bbox.box{jj})
+
+                if bbox.box{ii}(1) == bbox.box{jj}(1) 
+                     if bbox.score{ii}>bbox.score{jj}
+
+                         bbox.box{jj} = [];
+                         bbox.score{jj}=[];
+                     else
+
+                         bbox.box{ii} =[];
+                         bbox.score{ii}=[];
+
+                     end
+                end
+
+
+            end
+        end
+      
+    end
     
     %Put bounding boxes over the image
     figure(1) ; clf ;  imagesc(im) ; 
     for ii= 1:length(bbox.box)
+        if~isempty(bbox.box{ii})
      rectangle('Position', bbox.box{ii}, 'EdgeColor','g','LineWidth',2);
      text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
-    end    
+        end  
+    end
+    
             
 elapsedTime = toc*1000
 

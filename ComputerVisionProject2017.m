@@ -156,7 +156,7 @@ for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
         [bestScore, best] = max(scores) ;
             
         %If the window detects a pedestrian, put the window image coordinates in the boundary box struct
-        if(best ==  1)
+        if(best ==  1 & bestScore > 0.75)
 			bbox.box{count} = windowBox;
             bbox.score{count} = bestScore;
             count = count + 1;
