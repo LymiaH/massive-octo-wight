@@ -5,13 +5,15 @@ function find_bbox(handles, net, path, ratio, interval, percent_minimum)
     if nargin < 4
         ratio = 2.7699;
     end
-    if nargin < 5
+    if nargin < 5 || interval < 1
         img_size = size(imread(path));
         interval = ceil(min(img_size(1:2))/16);
     end
-    if nargin < 6
+    interval = ceil(max(1, interval));
+    if nargin < 6 || percent_minimum < 0
        percent_minimum = [0.05 0.2];
     end
+    percent_minimum = max(0, percent_minimum);
     
     results_find = test_net_find(interval, ratio, net, path, percent_minimum);
     

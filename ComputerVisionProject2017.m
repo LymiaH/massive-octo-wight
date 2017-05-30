@@ -22,7 +22,7 @@ function varargout = ComputerVisionProject2017(varargin)
 
 % Edit the above text to modify the response to help ComputerVisionProject2017
 
-% Last Modified by GUIDE v2.5 30-May-2017 10:06:15
+% Last Modified by GUIDE v2.5 30-May-2017 11:59:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,16 +55,21 @@ function ComputerVisionProject2017_OpeningFcn(hObject, eventdata, handles, varar
 % Choose default command line output for ComputerVisionProject2017
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
+
 
 %Run setup script
 setup;
+
+%Load the trained model
+handles.net = load('data/trainedNet/trainedNet-caffe-alex.mat');
 
 %Make the axis blank by default.
 handles.imageDefault = [0, 0; 0, 0];
 axes(handles.axes1);
 imshow(handles.imageDefault);
+
+% Update handles structure
+guidata(hObject, handles);
 
 % UIWAIT makes ComputerVisionProject2017 wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -189,7 +194,7 @@ end
 
 %For every pedestrian that was detected, put bounding boxes over the image
 axes(handles.axes1);
-imagesc(im) ; 
+imshow(im) ; 
 axis off
 for ii= 1:length(bbox.box)
     if~isempty(bbox.box{ii})
@@ -237,8 +242,6 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 %Get the image that was loaded in the gui
 %im = imread(handles.imageToBeUsed);
 
-%Load the trained model
-net = load('data/trainedNet/trainedNet-caffe-alex.mat');
 
 %Start Timer
 tic;
@@ -247,7 +250,7 @@ tic;
 axes(handles.axes1);
 
 %find bounding boxes
-find_bbox(handles, net,handles.imageToBeUsed)
+find_bbox(handles, handles.net,handles.imageToBeUsed,handles.ratio,handles.interval)
 
 %End timer
 elapsedTime = round(toc*1000);
@@ -255,4 +258,66 @@ elapsedTime = round(toc*1000);
 %Print the detection time in the gui
 detectionTimeLabel = sprintf('%.f ms', elapsedTime);
 set(handles.edit1, 'String', detectionTimeLabel);
+guidata(hObject,handles);
+
+
+
+function edit2_Callback(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit2 as text
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+if isfield(handles,'interval')
+    handles.interval = str2double(get(hObject,'String'));
+    guidata(hObject,handles);
+end
+
+% --- Executes during object creation, after setting all properties.
+function edit2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+%Sets the default sigma value. It was set as 2 in GUIDE.
+handles.interval = str2double(get(hObject,'String'));
+guidata(hObject,handles);
+
+
+
+function edit3_Callback(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit3 as text
+%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+if isfield(handles,'ratio')
+    handles.interval = str2double(get(hObject,'String'));
+    guidata(hObject,handles);
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function edit3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+%Sets the default sigma value. It was set as 2 in GUIDE.
+handles.ratio = str2double(get(hObject,'String'));
 guidata(hObject,handles);
