@@ -31,6 +31,11 @@ function net = train_net_for_pedestrian_detection(pretrainedPath)
     opts.gpus = [] ;
     opts.learningRate = 0.001 ;
     opts.weightDecay = 0.0005 ;
+    opts.expDir = 'data/exp-caffe-alex';
+    %opts.expDir = 'data/exp-matconvnet-alex';
+    %opts.expDir = 'data/exp-matconvnet-vgg-f';
+    %opts.expDir = 'data/exp-vgg-m-1024';
+    %opts.expDir = 'data/exp-vgg-verydeep-16';
     
     %Call createImdb function to get image database to train
     imdb = createImdb('Images',pretrained_net);
@@ -56,7 +61,12 @@ function net = train_net_for_pedestrian_detection(pretrainedPath)
 	%Makes a directory for net to be stored in 
     warning('off', 'MATLAB:MKDIR:DirectoryExists');
     mkdir('data/trainedNet/');
-    save('data/trainedNet/trainedNet.mat','-struct','net');
+    %save('data/trainedNet/trainedNet','-struct','net');
+    save('data/trainedNet/trainedNet-caffe-alex.mat','-struct','net');
+    %save('data/trainedNet/trainedNet-matconvnet-alex.mat','-struct','net');
+    %save('data/trainedNet/trainedNet-matconvnet-vgg-f.mat','-struct','net');
+    %save('data/trainedNet/trainedNet-vgg-m-1024','-struct','net');
+    %save('data/trainedNet/trainedNet-vgg-verydeep-16','-struct','net');
     
     %Upgrade to current version of Matconvnet and fills in missing default values. 
     net = vl_simplenn_tidy(net);

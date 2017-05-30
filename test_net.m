@@ -2,11 +2,11 @@ function test_net(net)
     % Obtain and preprocess an image.
 
    %im = imread('F:\CITS4402\FudanPed00001.png') ;
-    %im = imread('E:\CITS4402\Data_toolkit\PennFudanPed\PNGImages\PennPed00096.png');
+    %im = imread('F:\CITS4402\Data_toolkit\PennFudanPed\PNGImages\PennPed00096.png');
    %im = imread('E:\CITS4402\Images\notPedestrians\cat.jpg');
-    %im = imread('F:\CITS4402\pic.png');
- % im =imread('http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg');
-    im=imread('.\PennFudanPed\PNGImages\FudanPed00014.png');
+    im = imread('F:\CITS4402\pic.png');
+  %im =imread('http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg');
+   % im=imread('.\PennFudanPed\PNGImages\FudanPed00014.png');
     net.layers{end}.type = 'softmax';
    
 
@@ -47,7 +47,7 @@ count = 1;
             [bestScore, best] = max(scores) ;
             
             %If the window detects a pedestrian
-           if(best ==  1 && bestScore>=0.80)
+           if(best ==  1 )
                 bbox.box{count} = windowBox;
                 bbox.score{count} = bestScore;
                 count = count + 1;

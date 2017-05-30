@@ -1,14 +1,17 @@
-function find_bbox(net, path, interval)
-    if nargin < 2
+function find_bbox(handles, net, path, interval)
+    if nargin < 3
         path = 'http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg';
     end
-    if nargin < 3
+    if nargin < 4
         interval = 32;
     end
-    
+   
     results_find = test_net_find(interval, 2.7699, net, path);
     
     results_peak = get_peaks(results_find, interval);
+    
+    %This lets the image show up in the GUI
+    axes(handles.axes1)
     
     imshow(imread(path));
     
@@ -18,5 +21,4 @@ function find_bbox(net, path, interval)
         rectangle('Position', bbox, 'EdgeColor','g','LineWidth',2);
         text(bbox(1)-10, bbox(2)-10, sprintf('%.3f', results_peak{ii}.score), 'Color', 'red','FontSize',14);
     end
-    
 end

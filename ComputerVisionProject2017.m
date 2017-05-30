@@ -22,7 +22,7 @@ function varargout = ComputerVisionProject2017(varargin)
 
 % Edit the above text to modify the response to help ComputerVisionProject2017
 
-% Last Modified by GUIDE v2.5 26-May-2017 09:29:25
+% Last Modified by GUIDE v2.5 30-May-2017 10:06:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,6 +60,7 @@ guidata(hObject, handles);
 
 %Run setup script
 setup;
+
 %Make the axis blank by default.
 handles.imageDefault = [0, 0; 0, 0];
 axes(handles.axes1);
@@ -104,6 +105,7 @@ guidata(hObject,handles);
 
 
 % --- Executes on button press in pushbutton3.
+% --- Method 1 Pedestrian Detection
 function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -118,6 +120,7 @@ net = load('data/trainedNet/trainedNet.mat');
 %Change the last layer to softmax so the net can classify
 net.layers{end}.type = 'softmax';
 
+%Start Timer
 tic;
 
 %Set Window (boundary box) size
@@ -156,7 +159,7 @@ for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
         [bestScore, best] = max(scores) ;
             
         %If the window detects a pedestrian, put the window image coordinates in the boundary box struct
-        if(best ==  1 & bestScore > 0.75)
+        if(best ==  1)
 			bbox.box{count} = windowBox;
             bbox.score{count} = bestScore;
             count = count + 1;
@@ -164,15 +167,38 @@ for y = Ymin:(windowSize(2)/2):(Ymax - windowSize(2))
     end
 end
     
+
+%To deal with some of the vertical overlap, loop over the bboxes to find where x coordinate
+%is the same. Then only keep the highest bbox
+for ii = 1:length(bbox.box)
+    for jj = ii+1:length(bbox.box)
+        if jj <= length(bbox.box)&& ~isempty(bbox.box{ii}) && ~isempty(bbox.box{jj})
+            if bbox.box{ii}(1) == bbox.box{jj}(1) 
+                 if bbox.score{ii}>bbox.score{jj}
+                     bbox.box{jj} = [];
+                     bbox.score{jj}=[];
+                 else
+                     bbox.box{ii} =[];
+                     bbox.score{ii}=[];
+                 end
+            end
+        end
+    end
+end
+
+
 %For every pedestrian that was detected, put bounding boxes over the image
 axes(handles.axes1);
 imagesc(im) ; 
 axis off
 for ii= 1:length(bbox.box)
-    rectangle('Position', bbox.box{ii}, 'EdgeColor','g','LineWidth',2);
-    text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
-end    
-            
+    if~isempty(bbox.box{ii})
+        rectangle('Position', bbox.box{ii}, 'EdgeColor','g','LineWidth',2);
+        text(bbox.box{ii}(1)-10, bbox.box{ii}(2)-10, sprintf('%.3f', bbox.score{ii}), 'Color', 'red','FontSize',14);
+    end
+end
+
+%End timer
 elapsedTime = round(toc*1000);
 
 %Print the detection time in the gui
@@ -200,3 +226,33 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton4.
+% --- Method 2 Pedestrian Detection
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%Get the image that was loaded in the gui
+%im = imread(handles.imageToBeUsed);
+
+%Load the trained model
+net = load('data/trainedNet/trainedNet-caffe-alex.mat');
+
+%Start Timer
+tic;
+
+%Lets the image show in the GUI
+axes(handles.axes1);
+
+%find bounding boxes
+find_bbox(handles, net,handles.imageToBeUsed)
+
+%End timer
+elapsedTime = round(toc*1000);
+
+%Print the detection time in the gui
+detectionTimeLabel = sprintf('%.f ms', elapsedTime);
+set(handles.edit1, 'String', detectionTimeLabel);
+guidata(hObject,handles);
