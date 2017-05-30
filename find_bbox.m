@@ -1,12 +1,19 @@
-function find_bbox(handles, net, path, interval)
+function find_bbox(handles, net, path, ratio, interval, percent_minimum)
     if nargin < 3
         path = 'http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg';
     end
     if nargin < 4
-        interval = 32;
+        ratio = 2.7699;
     end
-   
-    results_find = test_net_find(interval, 2.7699, net, path);
+    if nargin < 5
+        img_size = size(imread(path));
+        interval = ceil(min(img_size(1:2))/16);
+    end
+    if nargin < 6
+       percent_minimum = [0.05 0.2];
+    end
+    
+    results_find = test_net_find(interval, ratio, net, path, percent_minimum);
     
     results_peak = get_peaks(results_find, interval);
     

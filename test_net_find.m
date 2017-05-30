@@ -1,6 +1,6 @@
-function [results] = test_net_find(interval, ratio, net, path)
+function [results] = test_net_find(interval, ratio, net, path, percent_minimum)
     %ratio is y/x
-    if nargin > 4
+    if nargin > 5
        error('Too many inputs')
     end
     if nargin < 1
@@ -24,6 +24,10 @@ function [results] = test_net_find(interval, ratio, net, path)
     if nargin < 4
         path = 'http://exchange.aaa.com/wp-content/uploads/2014/03/Pedestrian-Safety.jpg';
     end
+    if nargin < 5
+       percent_minimum = [0.05 0.2];
+    end
+    
     im = imread(path);
 
     figure(1);
@@ -31,6 +35,9 @@ function [results] = test_net_find(interval, ratio, net, path)
     bbox_rect = rectangle('Position', [0,0,1,1], 'EdgeColor','g','LineWidth',2);
     bbox_text = text(0, 0, sprintf('%.3f', 0), 'Color', 'red','FontSize',14);
     [im_height, im_width, ~] = size(im);
+    
+    min_width = floor(im_width * percent_minimum(1));
+    min_height = floor(im_height * percent_minimum(2));
     
     results = cell(1,0);
     
@@ -41,7 +48,13 @@ function [results] = test_net_find(interval, ratio, net, path)
             %for each x, y pair
             if ratio <= 0
                 for bottom = top+interval:interval:im_height
+                    if (bottom - top) < min_height
+                       continue 
+                    end
                     for right = left+interval:interval:im_width
+                        if (right - left) < min_width
+                           continue
+                        end
                         score = processing_step(top, left, bottom, right, net, im, bbox_rect, bbox_text);
                         if score > best_score
                             best_score = score;
@@ -54,6 +67,11 @@ function [results] = test_net_find(interval, ratio, net, path)
                     for right = left+interval:interval:im_width
                         width = right - left;
                         height = round(width * ratio);
+                        
+                        if width < min_width || height < min_height
+                           continue
+                        end
+                        
                         bottom = top + height;
                         if bottom > im_height
                             break
@@ -68,6 +86,11 @@ function [results] = test_net_find(interval, ratio, net, path)
                     for bottom = top+interval:interval:im_height
                         height = bottom - top;
                         width = round(height * ratio);
+                        
+                        if width < min_width || height < min_height
+                           continue
+                        end
+                        
                         right = left + width;
                         if right > im_width
                             break
