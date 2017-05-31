@@ -20,7 +20,7 @@ function find_bbox(handles, net, path, ratio, interval, percent_minimum)
     results_peak = get_peaks(results_find, interval);
     
     %This lets the image show up in the GUI
-    if isvalid(handles)
+    if isa(handles,'struct')
         axes(handles.axes1)
     end
     

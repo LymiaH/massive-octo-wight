@@ -301,7 +301,7 @@ function edit3_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit3 as a double
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
 if isfield(handles,'ratio')
-    handles.interval = str2double(get(hObject,'String'));
+    handles.ratio = str2double(get(hObject,'String'));
     guidata(hObject,handles);
 end
 
